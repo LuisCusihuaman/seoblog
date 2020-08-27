@@ -2,6 +2,7 @@ const User = require("../models/user");
 const shortId = require("shortid");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
+const { response } = require("express");
 
 exports.signup = (req, res) => {
 	User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -47,3 +48,13 @@ exports.signin = (req, res) => {
 		return res.json({ token, user: { _id, username, name, email, role } });
 	});
 };
+
+exports.signout = (req, res = response) => {
+	res.clearCookie("token");
+	res.json({ message: "Signout success" });
+};
+
+exports.requireSignin = expressJwt({
+	secret: process.env.JWT_SECRET,
+	algorithms: ["HS256"],
+});
