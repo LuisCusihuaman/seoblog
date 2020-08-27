@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
+//bring routes
+const blogRoutes = require("./routes/blog");
 
 // app
 const app = express();
@@ -23,15 +25,13 @@ mongoose
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
+//routes middlewares
+app.use("/api", blogRoutes);
+
 // cors
 if (process.env.NODE_ENV === "development") {
 	app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
-
-//routes
-app.use("/api", (req, res) => {
-	res.json({ time: Date().toString() });
-});
 
 //port
 const port = process.env.PORT || 8000;
