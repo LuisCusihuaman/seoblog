@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 //bring routes
 const blogRoutes = require("./routes/blog");
+const authRoutes = require("./routes/auth");
 
 // app
 const app = express();
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 //routes middlewares
 app.use("/api", blogRoutes);
+app.use("/api", authRoutes);
 
 // cors
 if (process.env.NODE_ENV === "development") {
