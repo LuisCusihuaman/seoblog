@@ -1,5 +1,6 @@
 const Category = require('../models/category');
 const slugify = require('slugify');
+const { errorHandler } = require('../helpers/dbErrorHandler');
 
 exports.create = (req, res) => {
   const { name } = req.body;
@@ -7,7 +8,7 @@ exports.create = (req, res) => {
   let category = new Category({ name, slug });
   category.save((error, data) => {
     if (error) {
-      return res.status(400).json({ error });
+      return res.status(400).json({ error: errorHandler(error) });
     }
     res.json(data);
   });
