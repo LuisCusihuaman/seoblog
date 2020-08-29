@@ -19,14 +19,19 @@ const SigninComponent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setValues({ ...values, loading: true, error: false, loading: false });
+    setValues({ ...values, loading: true, error: false, showForm: false });
     const user = { email, password };
     signin(user).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        authenticate(data, () => Router.push('/'));
-        Router.push('/');
+        authenticate(data, () => {
+          if (isAuth() && isAuth().role === 1) {
+            Router.push('/admin');
+          } else {
+            Router.push('/user');
+          }
+        });
       }
     });
   };

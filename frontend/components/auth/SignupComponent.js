@@ -16,7 +16,7 @@ const SignupComponent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setValues({ ...values, loading: true, error: false, loading: false });
+    setValues({ ...values, loading: true, error: false, showForm: false });
     const user = { name, email, password };
     signup(user).then((data) => {
       if (data.error) {
