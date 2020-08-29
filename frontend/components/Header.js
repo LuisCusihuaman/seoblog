@@ -6,11 +6,11 @@ import Link from 'next/link';
 import { isAuth, signout } from '../actions/auth';
 
 const Header = () => {
-  //This problem happens because the server loads the component and returns the html but the client changes it and then they don't match
-  // It’s because React expects the one rendered on the server should be the same with one rendered on client during hydration. It’s okay to use window type-checking before doing DOM access/operations but make sure it won’t affect rendering difference between client and server.
-  const [isBrowser, setIsBrowser] = useState(false);
+  /* TODO: Refactor to improve component logic
+   It’s because React expects the one rendered on the server should be the same with one rendered on client during hydration. It’s okay to use window type-checking before doing DOM access/operations but make sure it won’t affect rendering difference between client and server. */
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+  const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
     process.browser && setIsBrowser(true);
@@ -37,6 +37,20 @@ const Header = () => {
                 </Link>
               </NavItem>
             </>
+          )}
+          {isBrowser && isAuth() && isAuth().role === 0 && (
+            <NavItem>
+              <Link href="/user">
+                <NavLink style={{ cursor: 'pointer' }}>{`${isAuth().name}'s Dashboard`}</NavLink>
+              </Link>
+            </NavItem>
+          )}
+          {isBrowser && isAuth() && isAuth().role === 1 && (
+            <NavItem>
+              <Link href="/admin">
+                <NavLink style={{ cursor: 'pointer' }}>{`${isAuth().name}'s Dashboard`}</NavLink>
+              </Link>
+            </NavItem>
           )}
           {isBrowser && isAuth() && (
             <NavItem>

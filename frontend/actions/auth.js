@@ -50,6 +50,7 @@ export const authenticate = (data, cb) => {
 };
 
 export const isAuth = () => {
+  // FIXME: if the user changes his role in the localstorage, he can access admin resources
   if (process.browser && getCookie('token')) {
     const user = localStorage.getItem('user');
     return user && JSON.parse(user);
