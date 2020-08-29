@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import { API } from '../config';
 import cookie from 'js-cookie';
+
 export const signup = (user) => {
   return fetch(`${API}/signup`, {
     method: 'POST',
@@ -18,6 +19,15 @@ export const signin = (user) => {
     body: JSON.stringify(user),
   })
     .then((resp) => resp.json())
+    .catch((err) => console.log(err));
+};
+
+export const signout = (callback) => {
+  removeCookie('token');
+  removeLocalStorage('user');
+  callback();
+  return fetch(`${API}/signout`, { method: 'GET' })
+    .then(() => console.log('signout success'))
     .catch((err) => console.log(err));
 };
 
