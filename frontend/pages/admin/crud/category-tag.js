@@ -1,5 +1,6 @@
 import Layout from '../../../components/Layout';
 import Admin from '../../../components/auth/Admin';
+import Category from '../../../components/crud/Category';
 
 const CategoryTag = () => (
   <Layout>
@@ -10,7 +11,7 @@ const CategoryTag = () => (
             <h2 className="font-weight-bold">Manage Caegories and Tags</h2>
           </div>
           <div className="col-md-6">
-            <p>categories</p>
+            <Category />
           </div>
           <div className="col-md-6">
             <p>tags</p>
