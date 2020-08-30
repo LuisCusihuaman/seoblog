@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import Router from 'next/router';
 import { Collapse, Navbar, NavbarToggler, Nav, NavItem, NavLink, NavbarText } from 'reactstrap';
+import NProgress from 'nprogress';
 import { APP_NAME } from '../config';
 import Link from 'next/link';
+import Router from 'next/router';
 import { isAuth, signout } from '../actions/auth';
 
+/* TODO: Refactor to improve component logic
+ It’s because React expects the one rendered on the server should be the same with one rendered on client during hydration. It’s okay to use window type-checking before doing DOM access/operations but make sure it won’t affect rendering difference between client and server. */
+
+Router.onRouteChangeStart = (url) => NProgress.start();
+Router.onRouteChangeComplete = (url) => NProgress.done();
+Router.onRouteChangeError = (url) => NProgress.done();
+
 const Header = () => {
-  /* TODO: Refactor to improve component logic
-   It’s because React expects the one rendered on the server should be the same with one rendered on client during hydration. It’s okay to use window type-checking before doing DOM access/operations but make sure it won’t affect rendering difference between client and server. */
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const [isBrowser, setIsBrowser] = useState(false);
