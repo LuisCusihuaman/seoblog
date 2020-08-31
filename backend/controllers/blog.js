@@ -73,3 +73,17 @@ exports.create = (req, res) => {
     }
   });
 };
+
+exports.list = (req, res) => {
+  Blog.find()
+    .populate('categories', '_id name slug')
+    .populate('tags', '_id name slug')
+    .populate('postedBy', '_id name username')
+    .select('_id title slug excerpt categories tags postedBy createdAt updatedAt')
+    .then((data) => res.json(data))
+    .catch((err) => res.json({ error: errorHandler(err) }));
+};
+exports.listAllBlogsCategoriesTags = (req, res) => {};
+exports.read = (req, res) => {};
+exports.remove = (req, res) => {};
+exports.update = (req, res) => {};
