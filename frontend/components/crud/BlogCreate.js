@@ -63,6 +63,7 @@ export default function BlogCreate() {
   });
 
   const { error, sizeError, success, formData, title, hidePublishButton } = values;
+  const token = getCookie('token');
 
   const initCategories = () => {
     getCategories().then((data) =>
@@ -82,7 +83,21 @@ export default function BlogCreate() {
 
   const publishBlog = (e) => {
     e.preventDefault();
-    console.log('ready to publishblog');
+    createBlog(formData, token).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          title: '',
+          error: '',
+          success: `A new blog titled "${data.title}" is created`,
+        });
+        setBody('');
+        setCategories([]);
+        setTags([]);
+      }
+    });
   };
   const handleChange = (name) => (e) => {
     const value = name === 'photo' ? e.target.files[0] : e.target.value;
@@ -179,6 +194,16 @@ export default function BlogCreate() {
         <div className="col-md-8">{createBlogForm()}</div>
         <div className="col-md-4">
           <div>
+            <div className="form-group pb-2">
+              <h5>Feature image</h5>
+              <hr />
+              <small className="text-muted">Max size: 1mb</small>
+              <label className="btn btn-outline-info">
+                Upload feature image
+                <input onChange={handleChange('photo')} type="file" accept="image/*" hidden />
+              </label>
+            </div>
+            <div></div>
             <h5>Categories</h5>
             <hr />
             <ul style={{ maxHeight: '200px', overflowY: 'scroll' }}> {showCategories()}</ul>
