@@ -99,9 +99,31 @@ exports.listAllBlogsCategoriesTags = async (req, res) => {
     const categories = await Category.find();
     const tags = await Tag.find();
     return res.json({ blogs, categories, tags, size: blogs.length });
-  } catch (error) {}
+  } catch (error) {
+    return res.json({ error: errorHandler(error) });
+  }
 };
 
-exports.read = (req, res) => {};
-exports.remove = (req, res) => {};
+exports.read = async (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  try {
+    const blogs = await Blog.find()
+      .populate('categories', '_id name slug')
+      .populate('tags', '_id name slug')
+      .populate('postedBy', '_id name username profile')
+      .select('_id title body slug mtitle mdesc categories tags postedBy createdAt updatedAt');
+    return res.json(blogs);
+  } catch (error) {
+    return res.json({ error: errorHandler(error) });
+  }
+};
+exports.remove = async (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  try {
+    await Blog.findOneAndRemove({ slug });
+    return res.json({ message: 'Blog deleted sucessfully' });
+  } catch (error) {
+    return res.json({ error: errorHandler(error) });
+  }
+};
 exports.update = (req, res) => {};
