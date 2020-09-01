@@ -1,41 +1,12 @@
 import Layout from '../../components/Layout';
 import { listBlogsWithCategoriesAndTags } from '../../actions/blog';
-import Link from 'next/link';
-import moment from 'moment';
-import renderHTML from 'react-render-html';
+import Card from '../../components/blog/Card';
 
 export default function Blogs({ blogs, categories, tags, size }) {
   const showAllBlogs = () => {
     return blogs.map((blog, i) => (
       <article key={i}>
-        <div className="lead pb-4">
-          <header>
-            <Link href={`/blogs/${blog.slug}`}>
-              <a>
-                <h2 className="display-4 pt-3 pb-3 font-weight-blog">{blog.title}</h2>
-              </a>
-            </Link>
-          </header>
-          <section>
-            <p className="mark ml-1 pt-2 pb-3">
-              Written by {blog.postedBy.name} | Published {moment(blog.updatedAt).fromNow()}
-            </p>
-          </section>
-          <section>
-            <p>blog categories and tags</p>
-            <div className="row">
-              <div className="col-md-4">image</div>
-              <div className="col-md-8">
-                <section>
-                  <div className="pb-3">{renderHTML(blog.excerpt)}</div>
-                  <Link href={`/blogs/${blog.slug}`}>
-                    <a className="btn btn-primary pt-2">Read more</a>
-                  </Link>
-                </section>
-              </div>
-            </div>
-          </section>
-        </div>
+        <Card blog={blog} />
         <hr />
       </article>
     ));
