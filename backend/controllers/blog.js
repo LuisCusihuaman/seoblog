@@ -83,7 +83,25 @@ exports.list = (req, res) => {
     .then((data) => res.json(data))
     .catch((err) => res.json({ error: errorHandler(err) }));
 };
-exports.listAllBlogsCategoriesTags = (req, res) => {};
+exports.listAllBlogsCategoriesTags = async (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 10;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 1; //change for 8
+
+  try {
+    const blogs = await Blog.find()
+      .populate('categories', '_id name slug')
+      .populate('tags', '_id name slug')
+      .populate('postedBy', '_id name username profile')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select('_id title slug excerpt categories tags postedBy createdAt updatedAt');
+    const categories = await Category.find();
+    const tags = await Tag.find();
+    return res.json({ blogs, categories, tags, size: blogs.length });
+  } catch (error) {}
+};
+
 exports.read = (req, res) => {};
 exports.remove = (req, res) => {};
 exports.update = (req, res) => {};
