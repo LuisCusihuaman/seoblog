@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import moment from 'moment';
 import renderHTML from 'react-render-html';
+import { API } from '../../config';
 
 export default function Card({ blog }) {
   const showBlogCategories = (blog) =>
@@ -35,7 +36,16 @@ export default function Card({ blog }) {
         {showBlogCategories(blog)}
         {showBlogTags(blog)}
         <div className="row">
-          <div className="col-md-4">image</div>
+          <div className="col-md-4">
+            <section>
+              <img
+                className="img img-fluid pt-4"
+                style={{ maxHeight: '150px', width: 'auto' }}
+                src={`${API}/blog/photo/${blog.slug}`}
+                alt={blog.title}
+              />
+            </section>
+          </div>
           <div className="col-md-8">
             <section>
               <div className="pb-3">{renderHTML(blog.excerpt)}</div>
