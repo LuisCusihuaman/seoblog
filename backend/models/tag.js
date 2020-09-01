@@ -14,7 +14,7 @@ const tagSchema = new mongoose.Schema(
       index: true,
     },
   },
-  { timeStamp: true },
+  { timestamps: true },
 );
 
 module.exports = mongoose.model('Tag', tagSchema);
