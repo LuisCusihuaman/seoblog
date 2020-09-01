@@ -1,6 +1,7 @@
 import Layout from '../../components/Layout';
 import { listBlogsWithCategoriesAndTags } from '../../actions/blog';
 import Card from '../../components/blog/Card';
+import Link from 'next/link';
 
 export default function Blogs({ blogs, categories, tags, size }) {
   const showAllBlogs = () => {
@@ -11,6 +12,24 @@ export default function Blogs({ blogs, categories, tags, size }) {
       </article>
     ));
   };
+
+  const showAllCategories = () =>
+    categories.map((c, i) => (
+      <Link key={i} href={`/categories/${c.slug}`}>
+        <a href="" className="btn btn-primary mr-1 ml-1 mt-3">
+          {c.name}
+        </a>
+      </Link>
+    ));
+  const showAllTags = () =>
+    tags.map((t, i) => (
+      <Link key={i} href={`/tags/${t.slug}`}>
+        <a href="" className="btn btn-outline-primary mr-1 ml-1 mt-3">
+          {t.name}
+        </a>
+      </Link>
+    ));
+
   return (
     <Layout>
       <main>
@@ -22,7 +41,11 @@ export default function Blogs({ blogs, categories, tags, size }) {
               </h1>
             </div>
             <section>
-              <p>show categories and tags</p>
+              <div className="pb-5 text-center">
+                {showAllCategories()}
+                <br />
+                {showAllTags()}
+              </div>
             </section>
           </header>
         </div>

@@ -28,7 +28,7 @@ export default function Card({ blog }) {
         </Link>
       </header>
       <section>
-        <p className="mark ml-1 pt-2 pb-3">
+        <p className="mark ml-1 pt-2 pb-2">
           Written by {blog.postedBy.name} | Published {moment(blog.updatedAt).fromNow()}
         </p>
       </section>

@@ -187,7 +187,7 @@ export default function BlogCreate() {
               <h5>Feature image</h5>
               <hr />
               <small className="text-muted">Max size: 1mb</small>
-              <label className="btn btn-outline-info">
+              <label className="ml-2 btn btn-outline-info">
                 Upload feature image
                 <input onChange={handleChange('photo')} type="file" accept="image/*" hidden />
               </label>
