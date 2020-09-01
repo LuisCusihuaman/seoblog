@@ -85,7 +85,7 @@ exports.list = (req, res) => {
 };
 exports.listAllBlogsCategoriesTags = async (req, res) => {
   let limit = req.body.limit ? parseInt(req.body.limit) : 10;
-  let skip = req.body.skip ? parseInt(req.body.skip) : 1; //change for 8
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
   try {
     const blogs = await Blog.find()
@@ -186,4 +186,16 @@ exports.update = (req, res) => {
       });
     });
   });
+};
+
+exports.photo = async (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  try {
+    const blog = await Blog.findOne({ slug }).select('photo');
+    if (!blog) throw new Error({ message: 'Blog not found ' });
+    res.set('Content-Type', blog.photo.contentType);
+    return res.send(blog.photo.data);
+  } catch (error) {
+    return res.json({ error: errorHandler(error) });
+  }
 };
