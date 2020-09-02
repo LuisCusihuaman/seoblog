@@ -8,7 +8,27 @@ import Card from '../../components/blog/Card';
 import moment from 'moment';
 import renderHTML from 'react-render-html';
 
-export default function SingleBlog({ blog }) {
+export default function SingleBlog({ blog, query }) {
+  const head = () => (
+    <Head>
+      <title>
+        {blog.title} | {APP_NAME}
+      </title>
+      <meta name="description" content={blog.mdesc} />
+      <link rel="canonical" href={`${DOMAIN}/blogs/${query.slug}`} />
+      <meta property="og:title" content={`${blog.title} | ${APP_NAME}`} />
+      <meta property="og:description" content={blog.mdesc} />
+      <meta property="og:type" content="webiste" />
+      <meta property="og:url" content={`${DOMAIN}/blogs/${query.slug}`} />
+      <meta property="og:site_name" content={`${APP_NAME}`} />
+
+      <meta property="og:image" content={`${API}/blog/photo/${blog.slug}`} />
+      <meta property="og:image:secure_url" content={`${API}/blog/photo/${blog.slug}`} />
+      <meta property="og:image:type" content="image/jpg" />
+      <meta property="fb:app_id" content={`${FB_APP_ID}`} />
+    </Head>
+  );
+
   const showBlogCategories = (blog) =>
     blog.categories.map((c, i) => (
       <Link key={i} href={`/categories/${c.slug}`}>
@@ -25,6 +45,7 @@ export default function SingleBlog({ blog }) {
 
   return (
     <>
+      {head()}
       <Layout>
         <main>
           <articule>
@@ -77,7 +98,7 @@ SingleBlog.getInitialProps = ({ query }) => {
     if (data.error) {
       console.log(data.error);
     } else {
-      return { blog: data };
+      return { blog: data, query };
     }
   });
 };
