@@ -10,4 +10,4 @@ export const DOMAIN = publicRuntimeConfig.PRODUCTION
   ? publicRuntimeConfig.DOMAIN_PRODUCTION
   : publicRuntimeConfig.DOMAIN_DEVELOPMENT;
 
-export const FB_API_ID = publicRuntimeConfig.FB_API_ID;
+export const FB_APP_ID = publicRuntimeConfig.FB_APP_ID;

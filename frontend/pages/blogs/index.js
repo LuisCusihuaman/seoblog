@@ -2,12 +2,12 @@ import Layout from '../../components/Layout';
 import { listBlogsWithCategoriesAndTags } from '../../actions/blog';
 import Card from '../../components/blog/Card';
 import Link from 'next/link';
-import { APP_NAME, DOMAIN, FB_API_ID } from '../../config';
+import { APP_NAME, DOMAIN, FB_APP_ID } from '../../config';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useState } from 'react';
 
-export default function Blogs({ blogs, categories, tags, size }) {
-  const router = useRouter();
+export default function Blogs({ blogs, categories, tags, totalBlogs, blogsLimit, blogSkip }) {
   const head = () => (
     <Head>
       <title>Programming blogs | {APP_NAME}</title>
@@ -26,10 +26,38 @@ export default function Blogs({ blogs, categories, tags, size }) {
       <meta property="og:image" content={`${DOMAIN}/static/images/seoblog.jpg`} />
       <meta property="og:image:secure_url" content={`${DOMAIN}/static/images/seoblog.jpg`} />
       <meta property="og:image:type" content="image/jpg" />
-      <meta property="fb:app_id" content={`${FB_API_ID || ''}`} />
+      <meta property="fb:app_id" content={`${FB_APP_ID || ''}`} />
     </Head>
   );
 
+  const router = useRouter();
+  const [limit, setLimit] = useState(blogsLimit);
+  const [skip, setSkip] = useState(0);
+  const [size, setSize] = useState(totalBlogs);
+  const [loadedBlogs, setLoadedBlogs] = useState([]);
+
+  const loadMore = () => {
+    let toSkip = skip + limit;
+    listBlogsWithCategoriesAndTags(toSkip, limit).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setLoadedBlogs([...loadedBlogs, ...data.blogs]);
+        setSize(data.size);
+        setSkip(toSkip);
+      }
+    });
+  };
+  const loadMoreButton = () => {
+    return (
+      size > 0 &&
+      size >= limit && (
+        <button onClick={loadMore} className="btn btn-outline-primary btn-lg">
+          Load mmore
+        </button>
+      )
+    );
+  };
   const showAllBlogs = () => {
     return blogs.map((blog, i) => (
       <article key={i}>
@@ -38,7 +66,6 @@ export default function Blogs({ blogs, categories, tags, size }) {
       </article>
     ));
   };
-
   const showAllCategories = () =>
     categories.map((c, i) => (
       <Link key={i} href={`/categories/${c.slug}`}>
@@ -55,6 +82,13 @@ export default function Blogs({ blogs, categories, tags, size }) {
         </a>
       </Link>
     ));
+  const showLoadedBlogs = () => {
+    return loadedBlogs.map((blog, i) => (
+      <article key={i}>
+        <Card blog={blog} />
+      </article>
+    ));
+  };
 
   return (
     <>
@@ -77,28 +111,29 @@ export default function Blogs({ blogs, categories, tags, size }) {
               </section>
             </header>
           </div>
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-md-12">{showAllBlogs()}</div>
-            </div>
-          </div>
+          <div className="container-fluid">{showAllBlogs()}</div>
+          <div className="container-fluid">{showLoadedBlogs()}</div>
+          <div className="text-center pt-5 pb-5">{loadMoreButton()}</div>
         </main>
       </Layout>
     </>
   );
 }
 
-Blogs.getInitialProps = () => {
-  return listBlogsWithCategoriesAndTags().then((data) => {
-    if (data.error) {
-      console.log(data.error);
-    } else {
-      return {
-        blogs: data.blogs,
-        categories: data.categories,
-        tags: data.tags,
-        size: data.size,
-      };
-    }
-  });
+Blogs.getInitialProps = async () => {
+  const skip = 0;
+  const limit = 2;
+  const data = await listBlogsWithCategoriesAndTags(skip, limit);
+  if (data.error) {
+    console.log(data.error);
+  } else {
+    return {
+      blogs: data.blogs,
+      categories: data.categories,
+      tags: data.tags,
+      totalBlogs: data.size,
+      blogsLimit: limit,
+      blogsSkip: skip,
+    };
+  }
 };
