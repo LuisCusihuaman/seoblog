@@ -53,7 +53,7 @@ export default function Blogs({ blogs, categories, tags, totalBlogs, blogsLimit,
       size > 0 &&
       size >= limit && (
         <button onClick={loadMore} className="btn btn-outline-primary btn-lg">
-          Load mmore
+          Load more
         </button>
       )
     );
