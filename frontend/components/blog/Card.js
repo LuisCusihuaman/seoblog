@@ -11,6 +11,7 @@ export default function Card({ blog }) {
         <a className="btn btn-primary mr-1 ml-1 mt-3">{c.name}</a>
       </Link>
     ));
+
   const showBlogTags = (blog) =>
     blog.tags.map((t, i) => (
       <Link key={i} href={`/tags/${t.slug}`}>
