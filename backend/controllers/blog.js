@@ -107,12 +107,12 @@ exports.listAllBlogsCategoriesTags = async (req, res) => {
 exports.read = async (req, res) => {
   const slug = req.params.slug.toLowerCase();
   try {
-    const blogs = await Blog.find()
+    const blog = await Blog.findOne({ slug })
       .populate('categories', '_id name slug')
       .populate('tags', '_id name slug')
       .populate('postedBy', '_id name username profile')
       .select('_id title body slug mtitle mdesc categories tags postedBy createdAt updatedAt');
-    return res.json(blogs);
+    return res.json(blog);
   } catch (error) {
     return res.json({ error: errorHandler(error) });
   }
