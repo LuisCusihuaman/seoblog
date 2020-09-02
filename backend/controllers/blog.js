@@ -100,7 +100,7 @@ exports.listAllBlogsCategoriesTags = async (req, res) => {
     const tags = await Tag.find();
     return res.json({ blogs, categories, tags, size: blogs.length });
   } catch (error) {
-    return res.json({ error: errorHandler(error) });
+    return res.status(400).json({ error: errorHandler(error) });
   }
 };
 
@@ -114,7 +114,7 @@ exports.read = async (req, res) => {
       .select('_id title body slug mtitle mdesc categories tags postedBy createdAt updatedAt');
     return res.json(blog);
   } catch (error) {
-    return res.json({ error: errorHandler(error) });
+    return res.status(400).json({ error: errorHandler(error) });
   }
 };
 exports.remove = async (req, res) => {
@@ -123,7 +123,7 @@ exports.remove = async (req, res) => {
     await Blog.findOneAndRemove({ slug });
     return res.json({ message: 'Blog deleted sucessfully' });
   } catch (error) {
-    return res.json({ error: errorHandler(error) });
+    return res.status(400).json({ error: errorHandler(error) });
   }
 };
 
@@ -196,6 +196,20 @@ exports.photo = async (req, res) => {
     res.set('Content-Type', blog.photo.contentType);
     return res.send(blog.photo.data);
   } catch (error) {
-    return res.json({ error: errorHandler(error) });
+    return res.status(400).json({ error: errorHandler(error) });
+  }
+};
+
+exports.listRelated = async (req, res) => {
+  const limit = req.body.limit ? parseint(req.body.limit) : 3;
+  const { _id, categories } = req.body.blog;
+  try {
+    const blogs = await Blog.find({ _id: { $ne: _id }, categories: { $in: categories } })
+      .limit(limit)
+      .populate('postedBy', '_id name profile')
+      .select('title slug excerpt postedBy createdAt updatedAt');
+    return await res.json(blogs);
+  } catch (error) {
+    return res.status(400).json({ error: 'Blogs not found' });
   }
 };
