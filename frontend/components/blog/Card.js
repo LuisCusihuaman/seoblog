@@ -41,7 +41,7 @@ export default function Card({ blog }) {
             <section>
               <img
                 className="img img-fluid pt-4"
-                style={{ maxHeight: '150px', width: 'auto' }}
+                style={{ maxHeight: 'auto', width: '100%', objectFit: 'cover' }}
                 src={`${API}/blog/photo/${blog.slug}`}
                 alt={blog.title}
               />

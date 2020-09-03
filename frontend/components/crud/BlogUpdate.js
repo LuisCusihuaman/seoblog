@@ -6,6 +6,7 @@ import { singleBlog, updateBlog } from '../../actions/blog';
 import { getCategories } from '../../actions/category';
 import { getTags } from '../../actions/tag';
 import { Quillmodules, Quillformats } from '../../helpers/quill';
+import { DOMAIN, API } from '../../config';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function BlogUpdate() {
@@ -26,7 +27,7 @@ export default function BlogUpdate() {
   });
 
   const { error, success, formData, title } = values;
-
+  const token = getCookie('token');
   const initCategories = () => {
     getCategories().then((data) =>
       data.error ? setValues({ ...values, error: data.error }) : setCategories(data),
@@ -167,9 +168,33 @@ export default function BlogUpdate() {
     formData.set(name, value);
     setValues({ ...values, [name]: value, formData, error: '' });
   };
-  const editBlog = () => {
-    console.log('update blog');
+  const editBlog = (e) => {
+    e.preventDefault();
+    updateBlog(formData, token, router.query.slug).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          title: '',
+          success: `Blog titled "${data.title}" is  successfully updated`,
+        });
+        if (isAuth()) {
+          router.replace(`/${isAuth().role === 1 ? 'admin' : 'user'}`);
+        }
+      }
+    });
   };
+  const showError = () => (
+    <div className="alert alert-danger" style={{ display: error ? '' : 'none' }}>
+      {error}
+    </div>
+  );
+  const showSucess = () => (
+    <div className="alert alert-success" style={{ display: success ? '' : 'none' }}>
+      {success}
+    </div>
+  );
 
   const updateBlogForm = () => {
     return (
@@ -204,7 +229,17 @@ export default function BlogUpdate() {
       <div className="row">
         <div className="col-md-8">
           {updateBlogForm()}
-          <div className="pt-3">show sucess and error message</div>
+          <div className="pt-3">
+            {showSucess()}
+            {showError()}
+          </div>
+          {body && (
+            <img
+              src={`${API}/blog/photo/${router.query.slug}`}
+              alt={title}
+              style={{ width: '100%' }}
+            />
+          )}
         </div>
         <div className="col-md-4">
           <div>
