@@ -22,7 +22,6 @@ export default function BlogUpdate() {
     error: '',
     success: '',
     formData: '',
-    title: '',
     body: '',
   });
 

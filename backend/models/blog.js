@@ -6,7 +6,6 @@ const blogSchema = new mongoose.Schema(
     title: {
       type: String,
       trim: true,
-      required: true,
       min: 3,
       max: 160,
       required: true,
