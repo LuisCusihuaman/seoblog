@@ -1,4 +1,5 @@
 const Category = require('../models/category');
+const Blog = require('../models/blog');
 const slugify = require('slugify');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 const { response, request } = require('express');
@@ -24,14 +25,19 @@ exports.list = (req, res = response) => {
   });
 };
 
-exports.read = (req = request, res = response) => {
+exports.read = async (req = request, res = response) => {
   const slug = req.params.slug.toLowerCase();
-  Category.findOne({ slug }).exec((error, category) => {
-    if (error) {
-      return res.status(400).json({ error: errorHandler(error) });
-    }
-    res.json(category);
-  });
+  try {
+    const findCategory = await Category.findOne({ slug });
+    const blogs = await Blog.find({ categories: findCategory })
+      .populate('categories', '_id name slug')
+      .populate('tags', '_id name slug')
+      .populate('postedBy', '_id name ')
+      .select('_id title slug excerpt categories postedBy tags createdAt updatedAt');
+    return res.json({ category: findCategory, blogs });
+  } catch (error) {
+    return res.status(400).json({ error: errorHandler(error) });
+  }
 };
 
 exports.remove = (req = request, res = response) => {
