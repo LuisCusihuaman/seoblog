@@ -67,12 +67,13 @@ export default function SingleBlog({ blog, query }) {
       </div>
     ));
 
+  //TODO: make a title responsive
   return (
     <>
       {head()}
       <Layout>
         <main>
-          <articule>
+          <article>
             <div className="container-fluid">
               <section>
                 <div className="row" style={{ marginTop: '-30px' }}>
@@ -109,7 +110,7 @@ export default function SingleBlog({ blog, query }) {
             <div className="container pb-5">
               <p>show comments</p>
             </div>
-          </articule>
+          </article>
         </main>
       </Layout>
     </>

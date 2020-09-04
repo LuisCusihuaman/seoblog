@@ -23,7 +23,7 @@ const Header = () => {
   }, []);
 
   return (
-    <Navbar color="light" light expand="md">
+    <Navbar className="sticky-top" color="light" light expand="md">
       <Link href="/">
         <NavLink className="navbar-brand font-weight-bold">{APP_NAME}</NavLink>
       </Link>
