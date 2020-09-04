@@ -213,3 +213,25 @@ exports.listRelated = async (req, res) => {
     return res.status(400).json({ error: 'Blogs not found' });
   }
 };
+
+exports.listSearch = async (req, res) => {
+  const { search } = req.query;
+  try {
+    if (!search) {
+      error = new Error('A search query is needed to find the blogs');
+      error.statusCode = 404;
+      throw error;
+    }
+    const blogs = await Blog.find({
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { body: { $regex: search, $options: 'i' } },
+      ],
+    }).select('-photo -body');
+    return res.json(blogs);
+  } catch (error) {
+    const { message } = error;
+    const status = error.statusCode || 500;
+    return res.status(status).json({ error: message });
+  }
+};

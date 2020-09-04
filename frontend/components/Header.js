@@ -5,6 +5,7 @@ import { APP_NAME } from '../config';
 import Link from 'next/link';
 import Router from 'next/router';
 import { isAuth, signout } from '../actions/auth';
+import Search from './blog/Search';
 
 /* TODO: Refactor to improve component logic
  It’s because React expects the one rendered on the server should be the same with one rendered on client during hydration. It’s okay to use window type-checking before doing DOM access/operations but make sure it won’t affect rendering difference between client and server. */
@@ -23,59 +24,62 @@ const Header = () => {
   }, []);
 
   return (
-    <Navbar className="sticky-top" color="light" light expand="md">
-      <Link href="/">
-        <NavLink className="navbar-brand font-weight-bold">{APP_NAME}</NavLink>
-      </Link>
-      <NavbarToggler onClick={toggle} />
-      <Collapse isOpen={isOpen} navbar>
-        <Nav className="ml-auto" navbar>
-          <NavItem>
-            <Link href="/blogs">
-              <NavLink>Blogs</NavLink>
-            </Link>
-          </NavItem>
-          {isBrowser && !isAuth() && (
-            <>
-              <NavItem>
-                <Link href="/signin">
-                  <NavLink>Signin</NavLink>
-                </Link>
-              </NavItem>
-              <NavItem>
-                <Link href="/signup">
-                  <NavLink>Signup</NavLink>
-                </Link>
-              </NavItem>
-            </>
-          )}
-          {isBrowser && isAuth() && isAuth().role === 0 && (
+    <>
+      <Navbar className="sticky-top" color="light" light expand="md">
+        <Link href="/">
+          <NavLink className="navbar-brand font-weight-bold">{APP_NAME}</NavLink>
+        </Link>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          <Nav className="ml-auto" navbar>
             <NavItem>
-              <Link href="/user">
-                <NavLink style={{ cursor: 'pointer' }}>{`${isAuth().name}'s Dashboard`}</NavLink>
+              <Link href="/blogs">
+                <NavLink>Blogs</NavLink>
               </Link>
             </NavItem>
-          )}
-          {isBrowser && isAuth() && isAuth().role === 1 && (
-            <NavItem>
-              <Link href="/admin">
-                <NavLink style={{ cursor: 'pointer' }}>{`${isAuth().name}'s Dashboard`}</NavLink>
-              </Link>
-            </NavItem>
-          )}
-          {isBrowser && isAuth() && (
-            <NavItem>
-              <NavLink
-                style={{ cursor: 'pointer' }}
-                onClick={() => signout(() => Router.replace(`/signin`))}
-              >
-                Signout
-              </NavLink>
-            </NavItem>
-          )}
-        </Nav>
-      </Collapse>
-    </Navbar>
+            {isBrowser && !isAuth() && (
+              <>
+                <NavItem>
+                  <Link href="/signin">
+                    <NavLink>Signin</NavLink>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/signup">
+                    <NavLink>Signup</NavLink>
+                  </Link>
+                </NavItem>
+              </>
+            )}
+            {isBrowser && isAuth() && isAuth().role === 0 && (
+              <NavItem>
+                <Link href="/user">
+                  <NavLink style={{ cursor: 'pointer' }}>{`${isAuth().name}'s Dashboard`}</NavLink>
+                </Link>
+              </NavItem>
+            )}
+            {isBrowser && isAuth() && isAuth().role === 1 && (
+              <NavItem>
+                <Link href="/admin">
+                  <NavLink style={{ cursor: 'pointer' }}>{`${isAuth().name}'s Dashboard`}</NavLink>
+                </Link>
+              </NavItem>
+            )}
+            {isBrowser && isAuth() && (
+              <NavItem>
+                <NavLink
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => signout(() => Router.replace(`/signin`))}
+                >
+                  Signout
+                </NavLink>
+              </NavItem>
+            )}
+          </Nav>
+        </Collapse>
+      </Navbar>
+      <Search />
+    </>
   );
 };
 
