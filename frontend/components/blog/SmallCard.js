@@ -33,7 +33,7 @@ export default function SmallCard({ blog }) {
 
       <div className="card-body">
         Posted {moment(blog.updatedAt).fromNow()} by{' '}
-        <Link href="/">
+        <Link href={`/profile/${blog.postedBy.username}`}>
           <a className="loat-right">{blog.postedBy.username}</a>
         </Link>
       </div>

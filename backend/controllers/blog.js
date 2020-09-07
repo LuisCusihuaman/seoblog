@@ -206,7 +206,7 @@ exports.listRelated = async (req, res) => {
   try {
     const blogs = await Blog.find({ _id: { $ne: _id }, categories: { $in: categories } })
       .limit(limit)
-      .populate('postedBy', '_id name profile')
+      .populate('postedBy', '_id name username profile')
       .select('title slug excerpt postedBy createdAt updatedAt');
     return await res.json(blogs);
   } catch (error) {
