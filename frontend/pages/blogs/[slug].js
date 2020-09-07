@@ -88,7 +88,8 @@ export default function SingleBlog({ blog, query }) {
                 <div className="container">
                   <h1 className="display-2 pt-3 pb-3 text-center font-weight-bold">{blog.title}</h1>
                   <p className="lead mt-3 mark">
-                    Written by {blog.postedBy.name} | Published {moment(blog.updateAt).fromNow()}
+                    Written by {blog.postedBy.username} | Published
+                    {moment(blog.updateAt).fromNow()}
                   </p>
                   <div className="pb-3">
                     {showBlogCategories(blog)}

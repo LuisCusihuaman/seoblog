@@ -61,7 +61,7 @@ export default function BlogRead() {
       <div key={i} className="pb-5">
         <h3>{blog.title}</h3>
         <p className="mark">
-          Written by {blog.postedBy.name} | Published on {moment(blog.updatedAt).fromNow()}
+          Written by {blog.postedBy.username} | Published on {moment(blog.updatedAt).fromNow()}
         </p>
         <button className="btn btn-sm btn-danger" onClick={() => deleteConfirm(blog.slug)}>
           Delete
