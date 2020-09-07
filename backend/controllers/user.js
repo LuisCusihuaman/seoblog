@@ -16,6 +16,7 @@ exports.publicProfile = async (req, res) => {
       throw error;
     }
     user.photo = undefined;
+    user.hashed_password = undefined;
     const blogs = await Blog.find({ postedBy: user._id })
       .populate('categories', '_id name slug')
       .populate('tags', '_id name slug')
