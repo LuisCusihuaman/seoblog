@@ -41,22 +41,15 @@ exports.update = (req, res) => {
       return res.status(400).json({ error: 'Photo could not be uploaded' });
     }
     let user = req.profile;
-    user = _.extend(user.fields);
-    if (files.photo) {
-      if (files.photo.size > 10000) {
-        return res.status(400).json({ error: 'Image shoud be less than 1mb' });
-      }
+    user = _.extend(user, fields);
+    if (files.photo && files.photo.size > 10000000) {
+      return res.status(400).json({ error: 'Image shoud be less than 1mb' });
     }
 
-    user.photo.data = fs.readFileSync();
+    user.photo.data = fs.readFileSync(files.photo.path);
     user.photo.contentType = files.photo.type;
-    user.save((err, result) => {
-      if (err) {
-        return res.status(400).json({ error: err });
-      }
-      user.hashed_password = undefined;
-      return res.json(user);
-    });
+    user.hashed_password = undefined;
+    user.save((err) => (err ? res.status(400).json({ error: err }) : res.status(201).json(user)));
   });
 };
 
@@ -65,7 +58,7 @@ exports.photo = async (req, res) => {
   try {
     const user = User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ error: 'User not found ' });
+      return res.status(400).json({ error: 'User not found' });
     }
     if (user.photo.data) {
       res.set('Content-Type', user.photo.contentType);
