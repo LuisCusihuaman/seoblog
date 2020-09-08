@@ -31,6 +31,7 @@ export const update = (token, user) => {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     },
+    body: user,
   })
     .then((res) => res.json())
     .catch((err) => console.log(err));
