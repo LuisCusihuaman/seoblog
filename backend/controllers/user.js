@@ -41,6 +41,9 @@ exports.update = (req, res) => {
     if (err) {
       return res.status(400).json({ error: 'Photo could not be uploaded' });
     }
+    if (fields.password && fields.password.length < 6) {
+      return res.status(400).json({ error: 'Password should be min 6 characters long' });
+    }
     let user = req.profile;
     user = _.extend(user, fields);
     if (files.photo) {
@@ -63,18 +66,17 @@ exports.update = (req, res) => {
   });
 };
 
-exports.photo = async (req, res) => {
-  const { username } = req.params;
-  try {
-    const user = User.findOne({ username });
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
+exports.photo = (req, res) => {
+  const username = req.params.username;
+  User.findOne({ username }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: 'User not found',
+      });
     }
     if (user.photo.data) {
       res.set('Content-Type', user.photo.contentType);
       return res.send(user.photo.data);
     }
-  } catch (error) {
-    return res.json(error);
-  }
+  });
 };

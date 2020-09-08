@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getCookie } from '../../actions/auth';
 import { getProfile, update } from '../../actions/user';
+import { API } from '../../config';
 
 export default function ProfileUpdate() {
   const [values, setValues] = useState({
@@ -60,7 +61,7 @@ export default function ProfileUpdate() {
           name: data.name,
           email: data.email,
           about: data.about || '',
-          sucess: true,
+          success: true,
           loading: false,
         });
       }
@@ -100,8 +101,17 @@ export default function ProfileUpdate() {
         <input
           className="form-control"
           onChange={handleChange('email')}
-          type="text"
+          type="email"
           value={email}
+        />
+      </div>
+      <div className="form-group">
+        <label className="text-muted">Password</label>
+        <input
+          className="form-control"
+          onChange={handleChange('password')}
+          type="password"
+          value={password}
         />
       </div>
       <div className="form-group">
@@ -113,27 +123,46 @@ export default function ProfileUpdate() {
           value={about}
         />
       </div>
-      <div className="form-group">
-        <label className="text-muted">Password</label>
-        <input
-          className="form-control"
-          onChange={handleChange('password')}
-          type="text"
-          value={password}
-        />
-      </div>
       <button type="submit" className="btn btn-primary">
         Submit
       </button>
     </form>
   );
-
+  const showLoading = () => (
+    <div className="alert alert-info" style={{ display: loading ? '' : 'none' }}>
+      Loading...
+    </div>
+  );
+  const showError = () => (
+    <div className="alert alert-danger" style={{ display: error ? '' : 'none' }}>
+      {error}
+    </div>
+  );
+  const showSuccess = () => (
+    <div className="alert alert-success" style={{ display: success ? '' : 'none' }}>
+      Profile updated
+    </div>
+  );
   return (
     <>
       <div className="container">
         <div className="row">
-          <div className="col-md-4">image</div>
-          <div className="col-md-8 mb-5">{profileUpdateForm()}</div>
+          <div className="col-md-4">
+            {!!username && (
+              <img
+                src={`${API}/user/photo/${username}`}
+                alt="user profile"
+                className="img img-fluid img-thumbnail mb-3"
+                style={{ maxHeight: 'auto', width: '100%' }}
+              />
+            )}
+          </div>
+          <div className="col-md-8 mb-5">
+            {showLoading()}
+            {showError()}
+            {showSuccess()}
+            {profileUpdateForm()}
+          </div>
         </div>
       </div>
     </>
