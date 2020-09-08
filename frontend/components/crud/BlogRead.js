@@ -5,13 +5,13 @@ import { getCookie, isAuth } from '../../actions/auth';
 import { list, removeBlog } from '../../actions/blog';
 import moment from 'moment';
 
-export default function BlogRead() {
+export default function BlogRead({ username }) {
   const [blogs, setBlogs] = useState([]);
   const [message, setMessage] = useState('');
   const token = getCookie('token');
 
   const loadBlogs = () => {
-    list().then((data) => {
+    list(username).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {
@@ -44,7 +44,7 @@ export default function BlogRead() {
   const showUpdateButton = (blog) => {
     if (isAuth() && isAuth().role === 0) {
       return (
-        <Link href={`/user/crud/blog/${blog.slug}`}>
+        <Link href={`/user/crud/${blog.slug}`}>
           <a className="btn btn-sm btn-warning">Update</a>
         </Link>
       );

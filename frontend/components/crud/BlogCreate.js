@@ -49,8 +49,10 @@ export default function BlogCreate() {
   };
   useEffect(() => {
     setValues({ ...values, formData: new FormData() });
-    initCategories();
-    initTags();
+    if (!!token) {
+      initCategories();
+      initTags();
+    }
   }, [router]);
 
   const publishBlog = (e) => {
@@ -159,7 +161,7 @@ export default function BlogCreate() {
           <ReactQuill
             modules={Quillmodules}
             formats={Quillformats}
-            value={body}
+            value={body || ''}
             placeholder="Write something amazing..."
             onChange={handleBody}
           />

@@ -86,11 +86,11 @@ exports.adminMiddleware = (req, res, next) => {
   });
 };
 
-exports.canUpdateDeleteBlog = (req, res, next) => {
+exports.canUpdateDeleteBlog = async (req, res, next) => {
   const slug = req.params.slug.toLowerCase();
   try {
-    const blog = Blog.findOne({ slug });
-    const authorizedUser = blog.postedBy._id.toString() === req.profile.id_toString();
+    const blog = await Blog.findOne({ slug });
+    const authorizedUser = blog.postedBy._id.toString() === req.profile._id.toString();
     if (!authorizedUser) {
       return res.status(400).json({ error: 'You are not authorized' });
     }
