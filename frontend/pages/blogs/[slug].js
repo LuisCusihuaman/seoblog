@@ -70,7 +70,7 @@ export default function SingleBlog({ blog, query }) {
   const showComments = () => {
     return (
       <>
-        <DisqusThread id={blog.id} title={blog.title} path={`/blog/${blog.slug}`} />
+        <DisqusThread id={blog._id} title={blog.title} path={`/blog/${blog.slug}`} />
       </>
     );
   };
