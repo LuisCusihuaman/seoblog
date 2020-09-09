@@ -7,6 +7,7 @@ import { singleBlog, listRelated } from '../../actions/blog';
 import SmallCard from '../../components/blog/SmallCard';
 import moment from 'moment';
 import renderHTML from 'react-render-html';
+import DisqusThread from '../../components/DisqusTread';
 
 export default function SingleBlog({ blog, query }) {
   const [related, setRelated] = useState([]);
@@ -66,6 +67,13 @@ export default function SingleBlog({ blog, query }) {
         </article>
       </div>
     ));
+  const showComments = () => {
+    return (
+      <>
+        <DisqusThread id={blog.id} title={blog.title} path={`/blog/${blog.slug}`} />
+      </>
+    );
+  };
 
   //TODO: make a title responsive
   return (
@@ -112,8 +120,8 @@ export default function SingleBlog({ blog, query }) {
               <hr />
               <div className="row">{showRelatedBlog()}</div>
             </div>
-            <div className="container pb-5">
-              <p>show comments</p>
+            <div className="container pt-5 pb-5">
+              <p>{showComments()}</p>
             </div>
           </article>
         </main>
