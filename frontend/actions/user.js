@@ -33,6 +33,9 @@ export const update = (token, user) => {
     },
     body: user,
   })
-    .then((res) => res.json())
+    .then((res) => {
+      handleResponse(res);
+      return res.json();
+    })
     .catch((err) => console.log(err));
 };
