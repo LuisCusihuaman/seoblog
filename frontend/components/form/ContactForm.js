@@ -2,11 +2,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { emailContactForm } from '../../actions/form';
 
-export default function ContactForm() {
+export default function ContactForm({ authorEmail }) {
   const [values, setValues] = useState({
     message: '',
     name: '',
-    email: '',
+    email: authorEmail || '',
     sent: false,
     buttonText: 'Send Message',
     success: false,
@@ -18,7 +18,7 @@ export default function ContactForm() {
   const clickSubmit = (e) => {
     e.preventDefault();
     setValues({ ...values, buttonText: 'Sending...' });
-    emailContactForm({ name, email, message }).then((data) => {
+    emailContactForm({ authorEmail, name, email, message }).then((data) => {
       if (data?.error) {
         setValues({ ...values, error: data.error });
       } else {

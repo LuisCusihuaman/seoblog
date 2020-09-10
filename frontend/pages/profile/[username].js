@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Layout from '../../components/Layout';
 import Link from 'next/link';
 import moment from 'moment';
+import ContactForm from '../../components/form/ContactForm';
 
 export default function UserProfile({ user, blogs, query }) {
   const head = () => (
@@ -14,7 +15,7 @@ export default function UserProfile({ user, blogs, query }) {
       <meta name="description" content={`Blogs by ${user.username}`} />
       <link rel="canonical" href={`${DOMAIN}/profile/${query.username}`} />
       <meta property="og:title" content={`${user.name} | ${APP_NAME}`} />
-      <meta property="og:description" content={`Blogs by ${user.username}`} /> />
+      <meta property="og:description" content={`Blogs by ${user.username}`} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={`${DOMAIN}/profile/${query.username}`} />
       <meta property="og:site_name" content={`${APP_NAME}`} />
@@ -86,7 +87,7 @@ export default function UserProfile({ user, blogs, query }) {
                     Message {user.name}
                   </h5>
                   <br />
-                  <p>contact form</p>
+                  <ContactForm authorEmail={user.email} />
                 </div>
               </div>
             </div>
