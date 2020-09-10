@@ -23,13 +23,17 @@ exports.contactForm = (req, res) => {
             <p>https://seoblog.com</p>
           `,
   };
-  sgMail.send(emailData).then((data) => res.json({ data, success: true }));
+  sgMail
+    .send(emailData)
+    .then((data) => res.json({ data, success: true }))
+    .catch((err) => console.log(err));
 };
 
 exports.contactBlogAuthorForm = (req, res) => {
   const { authorEmail, email, name, message } = req.body;
+  console.log(authorEmail);
   const emailData = {
-    to: authorEmail,
+    to: authorEmail || 'lcusihuaman@fi.uba.ar',
     from: email,
     subject: `Someone message you from - ${process.env.APP_NAME}`,
     text: `
@@ -48,5 +52,8 @@ exports.contactBlogAuthorForm = (req, res) => {
             <p>https://seoblog.com</p>
           `,
   };
-  sgMail.send(emailData).then((data) => res.json({ data, success: true }));
+  sgMail
+    .send(emailData)
+    .then((data) => res.json({ data, success: true }))
+    .catch((err) => console.log(err));
 };

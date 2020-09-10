@@ -8,7 +8,7 @@ export const emailContactForm = (data) => {
   if (data.authorEmail) {
     emailEndpoint = `${API}/contact-blog-author`;
   } else {
-    emailEndpoint = `${API}/user/blog`;
+    emailEndpoint = `${API}/contact`;
   }
 
   return fetch(`${emailEndpoint}`, {
