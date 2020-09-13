@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signup } from '../../actions/auth';
+import { preSignup } from '../../actions/auth';
 
 const SignupComponent = () => {
   const [values, setValues] = useState({
@@ -18,7 +18,7 @@ const SignupComponent = () => {
     e.preventDefault();
     setValues({ ...values, loading: true, error: false, showForm: false });
     const user = { name, email, password };
-    signup(user).then((data) => {
+    preSignup(user).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {

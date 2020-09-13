@@ -8,6 +8,41 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const _ = require('lodash');
 
+exports.preSignup = async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (user) {
+      error = new Error('Email is taken');
+      error.statusCode = 400;
+      throw error;
+    }
+    const token = jwt.sign({ name, email, password }, process.env.JWT_SECRET_ACCOUNT_ACTIVATION, {
+      expiresIn: '10m',
+    });
+    console.log(`TOKEN ACTIVATE: ${token}`);
+    const emailData = {
+      from: 'noreply@seoblog.com',
+      to: email,
+      subject: `Account activation link`,
+      html: `
+              <h4>Please use the following link to activate your account:</h4>
+              <p>${process.env.CLIENT_URL}/auth/password/activate/${token}</p>
+              <hr/>
+              <p>This email may contain sensetive information</p>
+              <p>https://seoblog.com</p>
+            `,
+    };
+    await sgMail.send(emailData);
+    return res.json({
+      message: `Email has been sent to ${email}. Follow the instructions to activate your account`,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({ error: error.message });
+  }
+};
+
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
     if (user) {
