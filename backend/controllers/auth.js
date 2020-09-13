@@ -204,28 +204,29 @@ exports.googleLogin = async (req, res, next) => {
   const { tokenId } = req.body;
   try {
     const loginTicket = await client.verifyIdToken({
-      tokenId,
+      idToken: tokenId,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    const { email_verified, name, email, jti } = loginTicket;
+    let { email_verified, name, email, jti } = loginTicket.payload;
     if (!email_verified) {
       return res.status(400).json({ error: 'Google login fails' });
     }
-    let user = await User.findOne({ email });
-    if (!user) {
+    const userFound = await User.findOne({ email });
+    if (!userFound) {
+      let { email_verified, name, email, jti } = loginTicket.payload;
       const username = shortid.generate();
       const profile = `${process.env.CLIENT_URL}/profile/${username}`;
       const password = jti;
-      user = new User({ name, email, profile, username, password });
+      const user = new User({ name, email, profile, username, password });
       await user.save();
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
       res.cookie('token', token, { expiresIn: '1d' });
-      const { _id, email, name, role, username } = user;
+      const { _id, role } = user;
       return res.status(201).json({ token, user: { _id, email, name, role, username } });
     }
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ _id: userFound._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     res.cookie('token', token, { expiresIn: '1d' });
-    const { _id, email, name, role, username } = user;
+    const { _id, role, username } = userFound;
     return res.json({ token, user: { _id, email, name, role, username } });
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
