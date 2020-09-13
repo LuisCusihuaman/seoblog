@@ -4,9 +4,11 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const { response } = require('express');
 const Blog = require('../models/blog');
+const { OAuth2Client } = require('google-auth-library');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const _ = require('lodash');
+const shortid = require('shortid');
 
 exports.preSignup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -195,4 +197,37 @@ exports.resetPassword = async (req, res, next) => {
       return res.status(error.statusCode || 500).json({ error: error.message });
     }
   });
+};
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+exports.googleLogin = async (req, res, next) => {
+  const { tokenId } = req.body;
+  try {
+    const loginTicket = await client.verifyIdToken({
+      tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const { email_verified, name, email, jti } = loginTicket;
+    if (!email_verified) {
+      return res.status(400).json({ error: 'Google login fails' });
+    }
+    let user = await User.findOne({ email });
+    if (!user) {
+      const username = shortid.generate();
+      const profile = `${process.env.CLIENT_URL}/profile/${username}`;
+      const password = jti;
+      user = new User({ name, email, profile, username, password });
+      await user.save();
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      res.cookie('token', token, { expiresIn: '1d' });
+      const { _id, email, name, role, username } = user;
+      return res.status(201).json({ token, user: { _id, email, name, role, username } });
+    }
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.cookie('token', token, { expiresIn: '1d' });
+    const { _id, email, name, role, username } = user;
+    return res.json({ token, user: { _id, email, name, role, username } });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({ error: error.message });
+  }
 };
