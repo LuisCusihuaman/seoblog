@@ -24,7 +24,7 @@ exports.preSignup = async (req, res, next) => {
       expiresIn: '10m',
     });
     const emailData = {
-      from: 'noreply@seoblog.com',
+      from: 'noreply@seoblog.luistest.xyz',
       to: email,
       subject: `Account activation link`,
       html: `
@@ -32,7 +32,7 @@ exports.preSignup = async (req, res, next) => {
               <p>${process.env.CLIENT_URL}/auth/account/activate/${token}</p>
               <hr/>
               <p>This email may contain sensetive information</p>
-              <p>https://seoblog.com</p>
+              <p>https://seoblog.luistest.xyz</p>
             `,
     };
     await sgMail.send(emailData);
@@ -152,7 +152,7 @@ exports.forgotPassword = async (req, res, next) => {
       expiresIn: '10m',
     });
     const emailData = {
-      from: 'noreply@seoblog.com',
+      from: 'noreply@seoblog.luistest.xyz',
       to: email,
       subject: `Password reset link`,
       html: `
@@ -160,7 +160,7 @@ exports.forgotPassword = async (req, res, next) => {
               <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>
               <hr/>
               <p>This email may contain sensetive information</p>
-              <p>https://seoblog.com</p>
+              <p>https://seoblog.luistest.xyz</p>
             `,
     };
     await user.updateOne({ resetPasswordLink: token });

@@ -39,7 +39,7 @@ export default function ActivateAccount() {
       <div className="container">
         <h3 className="pb-4">Hey {name}, Ready to active your account?</h3>
         {showLoading()}
-        {error && error}
+        {error && <h2>{error}</h2>}
         {success && 'You have successfully activated your account. Please signin.'}
         {showButton && (
           <button className="btn btn-outline-primary" onClick={clickSubmit}>

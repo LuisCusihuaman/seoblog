@@ -1,6 +1,19 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { isProduction } from '../config';
 
 class MyDocument extends Document {
+  setGoogleTags() {
+    if (isProduction) {
+      return {
+        __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-177923175-1');
+`,
+      };
+    }
+  }
   render() {
     return (
       <Html lang="en">
@@ -20,6 +33,8 @@ class MyDocument extends Document {
             crossOrigin="anonymous"
           />
           <link rel="stylesheet" href="/static/css/styles.css" />
+          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177923175-1"></script>
+          <script dangerouslySetInnerHTML={this.setGoogleTags()}></script>
         </Head>
 
         <body>
