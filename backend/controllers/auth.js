@@ -21,14 +21,13 @@ exports.preSignup = async (req, res, next) => {
     const token = jwt.sign({ name, email, password }, process.env.JWT_SECRET_ACCOUNT_ACTIVATION, {
       expiresIn: '10m',
     });
-    console.log(`TOKEN ACTIVATE: ${token}`);
     const emailData = {
       from: 'noreply@seoblog.com',
       to: email,
       subject: `Account activation link`,
       html: `
               <h4>Please use the following link to activate your account:</h4>
-              <p>${process.env.CLIENT_URL}/auth/password/activate/${token}</p>
+              <p>${process.env.CLIENT_URL}/auth/account/activate/${token}</p>
               <hr/>
               <p>This email may contain sensetive information</p>
               <p>https://seoblog.com</p>
@@ -43,26 +42,25 @@ exports.preSignup = async (req, res, next) => {
   }
 };
 
-exports.signup = (req, res) => {
-  User.findOne({ email: req.body.email }).exec((err, user) => {
-    if (user) {
-      return res.status(422).json({
-        error: 'Email is taken',
-      });
+exports.signup = async (req, res, next) => {
+  const token = req.body.token;
+  if (!token) return res.json({ error: 'Something went wrong. Try again' });
+
+  jwt.verify(token, process.env.JWT_SECRET_ACCOUNT_ACTIVATION, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Expired link. Signup again' });
     }
-    const { name, email, password } = req.body;
+    const { name, email, password } = jwt.decode(token);
     let username = shortId.generate();
     let profile = `${process.env.CLIENT_URL}/profile/${username}`;
-    let newUser = new User({ name, email, password, profile, username });
-    newUser.save((err, success) => {
-      if (err) {
-        return res.status(400).json({ error: err });
-      }
-      // res.json({ user: success });
-      res.json({ message: 'Signup success! Please signin.' });
-    });
+    const user = new User({ name, email, password, profile, username });
+    user
+      .save()
+      .then(() => res.json({ message: 'Signup success!' }))
+      .catch((err) => res.status(401).json({ error: err }));
   });
 };
+
 exports.signin = (req, res) => {
   const { email, password } = req.body;
   // check if user exists
