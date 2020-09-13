@@ -6,6 +6,7 @@ const { response } = require('express');
 const Blog = require('../models/blog');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const _ = require('lodash');
 
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -136,4 +137,29 @@ exports.forgotPassword = async (req, res, next) => {
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
-exports.resetPassword = async (req, res, next) => {};
+exports.resetPassword = async (req, res, next) => {
+  const { resetPasswordLink, newPassword } = req.body;
+  if (!resetPasswordLink) return;
+  jwt.verify(resetPasswordLink, process.env.JWT_SECRET_RESET_PASSWORD, async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Expired link. Try again' });
+    }
+    try {
+      let user = await User.findOne({ resetPasswordLink });
+      if (!user) {
+        error = new Error('Something went wrong. Try later');
+        error.statusCode = 401;
+        throw error;
+      }
+      const updateFilds = {
+        password: newPassword,
+        resetPasswordLink: '',
+      };
+      user = _.extend(user, updateFilds);
+      await user.save();
+      return res.json({ message: 'Great! Now you can login with your new password' });
+    } catch (error) {
+      return res.status(error.statusCode || 500).json({ error: error.message });
+    }
+  });
+};
