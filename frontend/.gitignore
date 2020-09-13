@@ -4,6 +4,8 @@
 next.config.js
 # dotenv environment variables file (build for Zeit Now)
 .env
+.env.local
+.env.production
 .env.build
 # Dependency directories
 node_modules/

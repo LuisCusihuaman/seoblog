@@ -3,9 +3,9 @@ import { preSignup } from '../../actions/auth';
 
 const SignupComponent = () => {
   const [values, setValues] = useState({
-    name: 'Pepin',
-    email: 'pepin@gmail.com',
-    password: '123456',
+    name: '',
+    email: '',
+    password: '',
     error: '',
     loading: false,
     message: '',
