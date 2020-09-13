@@ -9,7 +9,7 @@ const UserIndex = () => (
           <div className="col-md-12 pt-5 pb-5">
             <h2>User Dashboard</h2>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-12">
             <ul className="list-group">
               <li className="list-group-item">
                 <Link href="/user/crud/blog">
@@ -28,7 +28,6 @@ const UserIndex = () => (
               </li>
             </ul>
           </div>
-          <div className="col-md-8">right</div>
         </div>
       </div>
     </Private>

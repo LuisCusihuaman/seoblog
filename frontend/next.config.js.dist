@@ -1,0 +1,13 @@
+module.exports = {
+  publicRuntimeConfig: {
+    APP_NAME: 'SEOBLOG',
+    API_DEVELOPMENT: 'http://localhost:8000/api',
+    API_PRODUCTION: 'YOUR_PRODUCTION_API_URL',
+    PRODUCTION: false,
+    DOMAIN_DEVELOPMENT: 'http://localhost:3000',
+    DOMAIN_PRODUCTION: 'YOUR_PRODUCTION_API_URL',
+    FB_APP_ID: 'YOUR_FB_APP_ID',
+    DISQUS_SHORTNAME: 'YOUR_FB_APP_ID_DISQUS_SHORTNAME',
+    GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID',
+  },
+};
